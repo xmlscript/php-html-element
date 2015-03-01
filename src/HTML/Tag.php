@@ -73,6 +73,7 @@ class Tag extends Element
 
     /**
      * @param string $name
+     * @return $this
      */
     public function setName($name)
     {
@@ -97,6 +98,7 @@ class Tag extends Element
 
     /**
      * @param array $attributes
+     * @return $this
      */
     public function setAttributes( array $attributes )
     {
@@ -113,6 +115,7 @@ class Tag extends Element
     /**
      * @param string $name
      * @param string|int|null $value
+     * @return $this
      */
     public function setAttribute( $name, $value )
     {
@@ -165,6 +168,7 @@ class Tag extends Element
 
     /**
      * @param Element $child
+     * @return $this
      */
     public function setChild( Element $child )
     {
@@ -174,6 +178,7 @@ class Tag extends Element
 
     /**
      * @param string $str
+     * @return $this
      */
     public function addText( $str )
     {
@@ -184,6 +189,7 @@ class Tag extends Element
 
     /**
      * @param string $str
+     * @return $this
      */
     public function setText( $str )
     {
@@ -220,7 +226,7 @@ class Tag extends Element
      */
     public function getChild( $index = 0 )
     {
-        if ( count( $this->_children ) < $index )
+        if ( $index < count( $this->_children ) )
             return $this->_children[$index];
 
         return NULL;
@@ -228,6 +234,7 @@ class Tag extends Element
 
     /**
      * @param Element[] $children
+     * @return $this
      */
     public function setChildren($children)
     {
@@ -241,6 +248,7 @@ class Tag extends Element
 
     /**
      * @param Element $child
+     * @return $this
      */
     public function addChild( Element $child )
     {

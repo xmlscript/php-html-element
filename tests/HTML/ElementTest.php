@@ -34,5 +34,15 @@ class ElementTest extends \PHPUnit_Framework_TestCase {
         // Text only
         $text = Element::createFromString('Hello User');
         $this->assertSame('Hello User', $text->render() );
+
+        // Parse and modify
+        $html = "<div><h1>Hello world</h1>How do you do?</div>";
+
+        $div = Element::createFromString($html);
+
+        $div->getChild(0)->setAttribute('style', 'font-weight:25px')->setText('Hello there!');
+#        $this->assertSame('')
+        echo $div;
+
     }
 }
