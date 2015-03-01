@@ -1,9 +1,9 @@
 {
-    "name":    "pecora/framework",
+    "name":    "wernerfreytag/html",
     "type":    "library",
     "license": "MIT",
     "authors": [
-        {"name": "Werner Freytag", "email": "wf.dev@pecora.de"}
+        {"name": "Werner Freytag", "email": "code@wfco.de"}
     ],
     "require": {
         "php": ">=5.3.3"
@@ -13,5 +13,5 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
-    },
+    }
 }

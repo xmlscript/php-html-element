@@ -55,13 +55,14 @@ class TagTest extends \PHPUnit_Framework_TestCase {
         $tag->addChild($img);
         $this->assertSame('<a href="TEST"><img></a>', $tag->render());
 
-        $img->src = "http://www.pecora.de/";
-        $this->assertSame('<a href="TEST"><img src="http://www.pecora.de/"></a>', $tag->render());
+        $img->src = "http://github.com/";
+        $this->assertSame('<a href="TEST"><img src="http://github.com/"></a>', $tag->render());
 
         $tag->addText('Click me');
-        $this->assertSame('<a href="TEST"><img src="http://www.pecora.de/">Click me</a>', $tag->render());
+        $this->assertSame('<a href="TEST"><img src="http://github.com/">Click me</a>', $tag->render());
 
         $tag->addText('<some text>');
-        $this->assertSame('<a href="TEST"><img src="http://www.pecora.de/">Click me&lt;some text&gt;</a>', $tag->render());
+        $this->assertSame('<a href="TEST"><img src="http://github.com/">Click me&lt;some text&gt;</a>', $tag->render());
     }
+
 }

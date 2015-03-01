@@ -57,13 +57,6 @@ abstract class Element
     public function createFromDOMNode(DOMNode $node)
     {
         /**
-         * @see http://php.net/manual/de/dom.constants.php
-         * @see http://dudapiotr.eu/table/data-table
-         * @see http://php.net/manual/de/class.domnode.php#domnode.props.nodetype
-         *
-         *      $ cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Framework/vendor/pecora/framework/tests
-         *      $ phpunit --bootstrap=bootstrap.php Framework/HTMLTest.php
-         *
          * @var DOMElement $item
          */
         switch ($node->nodeType) {
