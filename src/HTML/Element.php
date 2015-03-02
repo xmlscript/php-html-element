@@ -29,7 +29,7 @@ abstract class Element
         if (!is_string($html))
             throw new InvalidArgumentException("Argument not a string.");
 
-        // Simple Elemente selbst erstellen
+        // Use own method to parse simple strings
         if (($element = self::_createElementFromString($html)))
             return $element;
 
@@ -113,7 +113,7 @@ abstract class Element
     const PARSE_VALUE = 'value';
 
     /**
-     * Parset einen String und erstellt daraus ein Tag Element
+     * Parse a string and create an element from it
      *
      * @param string $string
      * @return Element
@@ -135,7 +135,7 @@ abstract class Element
 
         $result = array();
         $result_index = 0;
-        $field_type = self::PARSE_KEY; // wechselt zwischen key und value
+        $field_type = self::PARSE_KEY; // toggle between key and value
         for ($split_index = 0; $split_index < count($split_parts); ++$split_index) {
 
             if (!isset($result[$result_index][$field_type]))
@@ -153,13 +153,13 @@ abstract class Element
                 $split_index--;
             }
 
-            // Mit Anführungsstrichen
+            // Value is in quotation marks
             elseif (in_array($value, array('\'', '"'))) {
 
                 $field_type = self::PARSE_VALUE;
                 $quotation_mark = $value;
 
-                // String anhängen, bis Anführungsstriche geschlossen werden
+                // append string until quotation mark is closed
                 for ($split_index++; $split_index < count($split_parts); ++$split_index) {
 
                     $value = $split_parts[$split_index];
@@ -175,7 +175,9 @@ abstract class Element
 
                 $result_index++;
                 $field_type = self::PARSE_KEY;
-            } // Ohne Anführungsstriche
+            }
+
+            // Value is not in quotation marks
             elseif (trim($value)) {
                 $result[$result_index][$field_type] = $value;
 
@@ -186,14 +188,12 @@ abstract class Element
         }
 
         foreach ($result as $fields) {
-            if (!trim($fields[self::PARSE_KEY]))
+
+            if ( !trim($fields[self::PARSE_KEY]) || trim($fields[self::PARSE_KEY]) == '/' )
                 continue;
 
             $tag->setAttribute($fields[self::PARSE_KEY], $fields[self::PARSE_VALUE]);
         }
-
-        // XHTML-Fix
-        unset($attributes['/']);
 
         return $tag;
     }

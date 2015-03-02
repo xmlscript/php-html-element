@@ -29,20 +29,24 @@ class ElementTest extends \PHPUnit_Framework_TestCase {
 
         // Single tag
         $tag = Element::createFromString('<a href="bla" data-test></a>');
+		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $tag);
         $this->assertSame('<a href="bla" data-test></a>', $tag->render() );
 
         // Text only
         $text = Element::createFromString('Hello User');
+		$this->assertInstanceOf('\WernerFreytag\HTML\Text', $text);
         $this->assertSame('Hello User', $text->render() );
 
         // Parse and modify
         $html = "<div><h1>Hello world</h1>How do you do?</div>";
 
+		/** @var Tag $div */
         $div = Element::createFromString($html);
 
+		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $div);
+
         $div->getChild(0)->setAttribute('style', 'font-weight:25px')->setText('Hello there!');
-#        $this->assertSame('')
-        echo $div;
+        $this->assertSame('<div><h1 style="font-weight:25px">Hello there!</h1>How do you do?</div>', $div->render());
 
     }
 }
