@@ -34,8 +34,8 @@ class Comment extends Element
      */
     public function setString($string)
     {
-        if ( !is_string( $string ) )
-            throw new \InvalidArgumentException('String expected');
+		if ( !is_scalar( $string ) )
+			throw new \InvalidArgumentException('Scalar data expected');
 
         $this->_string = $string;
     }

@@ -142,7 +142,7 @@ class Tag extends Element
         if ( !is_string( $name ) )
             throw new \InvalidArgumentException('String expected');
 
-        return $this->_attributes[$name];
+		return array_key_exists( $name, $this->_attributes ) ? $this->_attributes[$name] : NULL;
     }
 
     /**
@@ -161,6 +161,25 @@ class Tag extends Element
         }
         else {
             $this->class = $class;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return $this
+     */
+    public function removeClass( $class )
+    {
+        if ( !is_string( $class ) )
+            throw new InvalidArgumentException( 'String expected.' );
+
+        if ( ( $current_value = $this->class ) )
+        {
+			$classes = preg_split('#\s+#', $current_value);
+            $this->class = join(' ', array_diff( $classes, array( $class ) ));
         }
 
         return $this;
@@ -222,7 +241,7 @@ class Tag extends Element
 
     /**
      * @param int $index
-     * @return null|Element
+     * @return Element|NULL
      */
     public function getChild( $index = 0 )
     {

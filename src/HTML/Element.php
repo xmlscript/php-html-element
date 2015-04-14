@@ -7,195 +7,220 @@ use DOMDocument, DOMNode, DOMElement, DOMText;
 
 abstract class Element
 {
-    /*
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->render();
-    }
+	/*
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->render();
+	}
 
-    /*
-     * @return string
-     */
-    abstract public function render();
-    
-    /**
-     * @param string $html
-     * @return Element
-     */
-    public static function createFromString($html)
-    {
-        if (!is_string($html))
-            throw new InvalidArgumentException("Argument not a string.");
+	/*
+	 * @return string
+	 */
+	abstract public function render();
 
-        // Use own method to parse simple strings
-        if (($element = self::_createElementFromString($html)))
-            return $element;
+	/**
+	 * @param string $html
+	 *
+	 * @return Element
+	 */
+	public static function createFromString( $html )
+	{
+		if ( !is_string( $html ) )
+			throw new InvalidArgumentException( "Argument not a string." );
 
-        $node = new DOMDocument();
-        $node->loadHTML('<?xml encoding="UTF-8">' . $html);
+		// Use own method to parse simple strings
+		if ( ($element = self::_createElementFromString( $html )) )
+			return $element;
 
-        if (!preg_match('#<html\b#i', $html)) {
-            $node_list = $node->getElementsByTagName('body');
-            foreach ($node_list as $node) {
-                break;
-            }
-        }
+		$node = new DOMDocument();
+		$node->loadHTML( '<?xml encoding="UTF-8">' . $html );
 
-        if (!preg_match('#<body\b#i', $html)) {
-            $node = $node->firstChild;
-        }
+		if ( !preg_match( '#<html\b#i', $html ) )
+		{
+			$node_list = $node->getElementsByTagName( 'body' );
+			foreach ( $node_list as $node )
+			{
+				break;
+			}
+		}
 
-        return self::createFromDOMNode($node);
-    }
+		if ( !preg_match( '#<body\b#i', $html ) )
+		{
+			$node = $node->firstChild;
+		}
 
-    /**
-     * @param $node
-     * @return Element
-     */
-    public function createFromDOMNode(DOMNode $node)
-    {
-        /**
-         * @var DOMElement $item
-         */
-        switch ($node->nodeType) {
-            case XML_HTML_DOCUMENT_NODE:
+		return self::createFromDOMNode( $node );
+	}
 
-                /** @var DOMDocument $document */
-                $document = $node;
+	/**
+	 * @param $node
+	 *
+	 * @return Element
+	 */
+	public static function createFromDOMNode( DOMNode $node )
+	{
+		/**
+		 * @var DOMElement $item
+		 */
+		switch ( $node->nodeType )
+		{
+			case XML_HTML_DOCUMENT_NODE:
 
-                $body_node = NULL;
-                foreach ($document->getElementsByTagName('html') as $body_node) { break; }
+				/** @var DOMDocument $document */
+				$document = $node;
 
-                if ( $body_node == NULL )
-                    throw new \LogicException('No html element found');
+				$body_node = NULL;
+				foreach ( $document->getElementsByTagName( 'html' ) as $body_node )
+				{
+					break;
+				}
 
-                return self::createFromDOMNode($body_node);
+				if ( $body_node == NULL )
+					throw new \LogicException( 'No html element found' );
 
-            case XML_ELEMENT_NODE:
+				return self::createFromDOMNode( $body_node );
 
-                /** @var \DOMElement $element */
-                $element = $node;
+			case XML_ELEMENT_NODE:
 
-                $tag = new Tag($element->nodeName);
+				/** @var \DOMElement $element */
+				$element = $node;
 
-                /**
-                 * @var string $attribute
-                 * @var \DOMAttr $attr
-                 */
-                foreach ($element->attributes as $attribute => $attr)
-                    $tag->setAttribute($attribute, $attr->value);
+				$tag = new Tag( $element->nodeName );
 
-                foreach ($element->childNodes as $child_node) {
-                    if (($child = self::createFromDOMNode($child_node)))
-                        $tag->addChild($child);
-                }
+				/**
+				 * @var string   $attribute
+				 * @var \DOMAttr $attr
+				 */
+				foreach ( $element->attributes as $attribute => $attr )
+					$tag->setAttribute( $attribute, $attr->value );
 
-                return $tag;
+				foreach ( $element->childNodes as $child_node )
+				{
+					if ( ($child = self::createFromDOMNode( $child_node )) )
+						$tag->addChild( $child );
+				}
 
-            case XML_TEXT_NODE:
-                /** @var DOMText $text */
-                $text = $node;
-                return new Text($text->wholeText);
+				return $tag;
 
-            case XML_COMMENT_NODE:
-                /** @var \DOMComment $comment */
-                $comment = $node;
-                return new Comment($comment->data);
+			case XML_TEXT_NODE:
+				/** @var DOMText $text */
+				$text = $node;
 
-            default:
-                throw new InvalidArgumentException("Non supported type '{$node->nodeType}'");
-        }
-    }
+				return new Text( $text->wholeText );
 
-    const PARSE_KEY = 'key';
-    const PARSE_VALUE = 'value';
+			case XML_COMMENT_NODE:
+				/** @var \DOMComment $comment */
+				$comment = $node;
 
-    /**
-     * Parse a string and create an element from it
-     *
-     * @param string $string
-     * @return Element
-     */
-    protected static function _createElementFromString($string)
-    {
-        if (!preg_match('#<#', $string, $matches))
-            return new Text($string);
+				return new Comment( $comment->data );
+		}
 
-        if (!preg_match('#^<([a-zA-Z0-9]+)(?:\s+([^>]+))?>(?:</([^>]+)>)?$#s', trim($string), $matches))
-            return NULL;
+		throw new InvalidArgumentException( "Non supported type '{$node->nodeType}'" );
+	}
 
-        if ( !empty($matches[3]) && strtolower($matches[3]) != strtolower($matches[1]) )
-            throw new InvalidArgumentException('Closing tag not equal to opening tag');
+	const PARSE_KEY = 'key';
+	const PARSE_VALUE = 'value';
 
-        $tag = new Tag($matches[1]);
+	/**
+	 * Parse a string and create an element from it
+	 *
+	 * @param string $string
+	 *
+	 * @return Element
+	 */
+	protected static function _createElementFromString( $string )
+	{
+		if ( !preg_match( '#<#', $string, $matches ) )
+			return new Text( $string );
 
-        $split_parts = preg_split('/([[:space:]\\"\'=])/m', trim($matches[2]), -1, PREG_SPLIT_DELIM_CAPTURE);
+		if ( !preg_match( '#^<([a-zA-Z0-9]+)(?:\s+([^>]+))?>(?:</([^>]+)>)?$#s', trim( $string ), $matches ) )
+			return NULL;
 
-        $result = array();
-        $result_index = 0;
-        $field_type = self::PARSE_KEY; // toggle between key and value
-        for ($split_index = 0; $split_index < count($split_parts); ++$split_index) {
+		if ( !empty($matches[3]) && strtolower( $matches[3] ) != strtolower( $matches[1] ) )
+			throw new InvalidArgumentException( 'Closing tag not equal to opening tag' );
 
-            if (!isset($result[$result_index][$field_type]))
-                $result[$result_index][$field_type] = '';
+		$tag = new Tag( $matches[1] );
 
-            $value = $split_parts[$split_index];
+		$split_parts = preg_split( '/([[:space:]\\"\'=])/m', trim( $matches[2] ), -1, PREG_SPLIT_DELIM_CAPTURE );
 
-            if ($value == '=') {
+		$result       = array();
+		$result_index = 0;
+		$field_type   = self::PARSE_KEY; // toggle between key and value
+		for ( $split_index = 0; $split_index < count( $split_parts ); ++$split_index )
+		{
 
-                $field_type = self::PARSE_VALUE;
+			if ( !isset($result[$result_index][$field_type]) )
+				$result[$result_index][$field_type] = '';
 
-                $split_index++;
-                while ($split_index < count($split_parts) && trim($split_parts[$split_index]) === '')
-                    $split_index++;
-                $split_index--;
-            }
+			$value = $split_parts[$split_index];
 
-            // Value is in quotation marks
-            elseif (in_array($value, array('\'', '"'))) {
+			if ( $value == '=' )
+			{
 
-                $field_type = self::PARSE_VALUE;
-                $quotation_mark = $value;
+				$field_type = self::PARSE_VALUE;
 
-                // append string until quotation mark is closed
-                for ($split_index++; $split_index < count($split_parts); ++$split_index) {
+				$split_index++;
+				while ( $split_index < count( $split_parts ) && trim( $split_parts[$split_index] ) === '' )
+					$split_index++;
+				$split_index--;
+			}
 
-                    $value = $split_parts[$split_index];
-                    if ($value[strlen($value) - 1] == chr(92) && $split_parts[$split_index + 1] == $quotation_mark) { // chr(92) = backslash
-                        $result[$result_index][$field_type] .= substr($value, 0, -1);
-                        $split_index++;
-                        $result[$result_index][$field_type] .= $split_parts[$split_index];
-                    } elseif ($value == $quotation_mark)
-                        break;
-                    else
-                        $result[$result_index][$field_type] .= $split_parts[$split_index];
-                }
+			// Value is in quotation marks
+			elseif ( in_array( $value, array('\'', '"') ) )
+			{
+				$field_type     = self::PARSE_VALUE;
+				$quotation_mark = $value;
 
-                $result_index++;
-                $field_type = self::PARSE_KEY;
-            }
+				// append string until quotation mark is closed
+				for ( $split_index++; $split_index < count( $split_parts ); ++$split_index )
+				{
+					$value = $split_parts[$split_index];
 
-            // Value is not in quotation marks
-            elseif (trim($value)) {
-                $result[$result_index][$field_type] = $value;
+					// chr(92) = backslash
+					if ( strlen( $value ) > 0 && $value[strlen( $value ) - 1] == chr(92) && $split_parts[$split_index + 1] == $quotation_mark )
+					{
+						$result[$result_index][$field_type] .= substr( $value, 0, -1 );
+						$split_index++;
+						$result[$result_index][$field_type] .= $split_parts[$split_index];
+					}
+					elseif ( $value == $quotation_mark )
+					{
+						break;
+					}
+					else
+					{
+						$result[$result_index][$field_type] .= $split_parts[$split_index];
+					}
+				}
 
-                $field_type = $field_type == self::PARSE_KEY ? self::PARSE_VALUE : self::PARSE_KEY;
-                if ($field_type == self::PARSE_KEY)
-                    $result_index++;
-            }
-        }
+				$result_index++;
+				$field_type = self::PARSE_KEY;
+			}
 
-        foreach ($result as $fields) {
+			// Value is not in quotation marks
+			elseif ( trim( $value ) )
+			{
+				$result[$result_index][$field_type] = $value;
 
-            if ( !trim($fields[self::PARSE_KEY]) || trim($fields[self::PARSE_KEY]) == '/' )
-                continue;
+				$field_type = $field_type == self::PARSE_KEY ? self::PARSE_VALUE : self::PARSE_KEY;
+				if ( $field_type == self::PARSE_KEY )
+					$result_index++;
+			}
+		}
 
-            $tag->setAttribute($fields[self::PARSE_KEY], $fields[self::PARSE_VALUE]);
-        }
+		foreach ( $result as $fields )
+		{
+			if ( !trim( $fields[self::PARSE_KEY] ) || trim( $fields[self::PARSE_KEY] ) == '/' )
+				continue;
 
-        return $tag;
-    }
+			$value = array_key_exists( self::PARSE_VALUE, $fields ) ? $fields[self::PARSE_VALUE] : NULL;
+
+			$tag->setAttribute( $fields[self::PARSE_KEY], $value );
+		}
+
+		return $tag;
+	}
 }
 

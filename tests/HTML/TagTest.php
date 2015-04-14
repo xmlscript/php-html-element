@@ -61,8 +61,78 @@ class TagTest extends \PHPUnit_Framework_TestCase {
         $tag->addText('Click me');
         $this->assertSame('<a href="TEST"><img src="http://github.com/">Click me</a>', $tag->render());
 
-        $tag->addText('<some text>');
-        $this->assertSame('<a href="TEST"><img src="http://github.com/">Click me&lt;some text&gt;</a>', $tag->render());
+		$tag->addText('<some text>');
+		$this->assertSame('<a href="TEST"><img src="http://github.com/">Click me&lt;some text&gt;</a>', $tag->render());
+
+		// getText - text at wrong index
+		$this->assertSame(NULL, $tag->getText());
+
+		// getText - text at index 0
+		$tag->setText('<some text>');
+		$this->assertSame('&lt;some text&gt;', $tag->getText());
     }
 
+	public function testAttributes()
+	{
+		$tag = new Tag('a');
+		$this->assertNull( $tag->getAttribute('href') );
+		$this->assertNull( $tag->href );
+
+		$tag->href = "#";
+		$this->assertSame('#', $tag->href);
+		$this->assertSame('#', $tag->getAttribute('href'));
+		$this->assertSame(array('href' => '#'), $tag->getAttributes() );
+
+		$tag->setAttribute('href', 'javascript:void(0)');
+		$this->assertSame('javascript:void(0)', $tag->href);
+		$this->assertSame('javascript:void(0)', $tag->getAttribute('href'));
+		$this->assertSame(array('href' => 'javascript:void(0)'), $tag->getAttributes() );
+
+		$tag->setAttributes(array('href' => ''));
+		$this->assertSame('', $tag->href);
+		$this->assertSame('', $tag->getAttribute('href'));
+		$this->assertSame(array('href' => ''), $tag->getAttributes() );
+
+		$tag->addClass( 'link' );
+		$this->assertSame('link', $tag->class );
+
+		$tag->addClass( 'link-external' );
+		$this->assertSame('link link-external', $tag->class );
+
+		$tag->removeClass( 'link' );
+		$this->assertSame('link-external', $tag->class );
+	}
+
+	public function testHierarchy()
+	{
+		$tag = new Tag('a');
+		$child1 = new Text('');
+		$child2 = new Text('any');
+
+		$this->assertNull( $tag->getChild(0) );
+
+		$tag->addChild( $child1 );
+
+		$this->assertSame( $child1, $tag->getChild(0) );
+		$this->assertSame( $child1, $tag->getChild() );
+		$this->assertNull( $tag->getChild(1) );
+
+		$tag->addChild( $child2 );
+
+		$this->assertSame( $child1, $tag->getChild(0) );
+		$this->assertSame( $child1, $tag->getChild() );
+		$this->assertSame( $child2, $tag->getChild(1) );
+		$this->assertNull( $tag->getChild(2) );
+
+		$tag->setChild( $child2 );
+		$this->assertSame( $child2, $tag->getChild(0) );
+		$this->assertSame( $child2, $tag->getChild() );
+		$this->assertNull( $tag->getChild(1) );
+
+		$tag->setChildren( array($child2, $child1) );
+		$this->assertSame( $child2, $tag->getChild(0) );
+		$this->assertSame( $child2, $tag->getChild() );
+		$this->assertSame( $child1, $tag->getChild(1) );
+		$this->assertNull( $tag->getChild(2) );
+	}
 }
