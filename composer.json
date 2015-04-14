@@ -5,6 +5,11 @@
     "authors": [
         {"name": "Werner Freytag", "email": "code@wfco.de"}
     ],
+    "extra": {
+      "branch-alias": {
+        "dev-master": "1.0.x-dev"
+      }
+    },
     "require": {
         "php": ">=5.3.3"
     },
