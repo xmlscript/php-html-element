@@ -11,7 +11,7 @@ Put the following into your composer.json
 
     {
         "require": {
-            "wernerfreytag/html-element": "master-dev"
+            "wernerfreytag/html-element": "dev-master"
         }
     }
 
