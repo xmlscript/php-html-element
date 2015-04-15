@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 13.04.15
- * Time: 23:43
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 class CommentTest extends \PHPUnit_Framework_TestCase {
 

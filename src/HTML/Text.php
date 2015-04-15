@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 28.02.15
- * Time: 13:41
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 
 class Text extends Element

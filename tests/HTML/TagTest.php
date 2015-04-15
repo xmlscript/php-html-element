@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 28.02.15
- * Time: 13:44
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 
 class TagTest extends \PHPUnit_Framework_TestCase {

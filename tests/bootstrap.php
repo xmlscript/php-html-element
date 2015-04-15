@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the WernerFreytag/HTML package.
+ * This file is part of the Bockmist/HTML package.
  *
  * (c) Werner Freytag <code@wfco.de>
  *

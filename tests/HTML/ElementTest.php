@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 28.02.15
- * Time: 17:38
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 class ElementTest extends \PHPUnit_Framework_TestCase {
 
@@ -29,22 +23,22 @@ class ElementTest extends \PHPUnit_Framework_TestCase {
 
         // Single tag
         $tag = Element::createFromString('<a href="bla" data-test></a>');
-		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $tag);
+		$this->assertInstanceOf('\Bockmist\HTML\Tag', $tag);
         $this->assertSame('<a href="bla" data-test></a>', $tag->render() );
 
 		// ' in <">-encapusulated string and visa versa
 		$tag = Element::createFromString('<a val1="\'" val2=\'"\'></a>');
-		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $tag);
+		$this->assertInstanceOf('\Bockmist\HTML\Tag', $tag);
 		$this->assertSame('<a val1="\'" val2="&quot;"></a>', $tag->render() );
 
 		// Escaped quotation - replaced with entity
 		$tag = Element::createFromString('<a href="bla\"" data-test></a>');
-		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $tag);
+		$this->assertInstanceOf('\Bockmist\HTML\Tag', $tag);
 		$this->assertSame('<a href="bla&quot;" data-test></a>', $tag->render() );
 
 		// Text only
         $text = Element::createFromString('Hello User');
-		$this->assertInstanceOf('\WernerFreytag\HTML\Text', $text);
+		$this->assertInstanceOf('\Bockmist\HTML\Text', $text);
         $this->assertSame('Hello User', $text->render() );
 
         // Parse and modify
@@ -53,7 +47,7 @@ class ElementTest extends \PHPUnit_Framework_TestCase {
 		/** @var Tag $div */
         $div = Element::createFromString($html);
 
-		$this->assertInstanceOf('\WernerFreytag\HTML\Tag', $div);
+		$this->assertInstanceOf('\Bockmist\HTML\Tag', $div);
 
         $div->getChild(0)->setAttribute('style', 'font-weight:25px')->setText('Hello there!');
         $this->assertSame('<div><h1 style="font-weight:25px">Hello there!</h1>How do you do?</div>', $div->render());

@@ -1,6 +1,6 @@
 <?php
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 use InvalidArgumentException;
 use DOMDocument, DOMNode, DOMElement, DOMText;

@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 01.03.15
- * Time: 12:15
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 
 class Comment extends Element

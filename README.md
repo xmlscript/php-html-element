@@ -11,7 +11,7 @@ Put the following into your composer.json
 
     {
         "require": {
-            "wernerfreytag/html-element": "dev-master"
+            "bockmist/html-element": "dev-master"
         }
     }
 

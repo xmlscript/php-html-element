@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: werner
- * Date: 28.02.15
- * Time: 13:43
- */
 
-namespace WernerFreytag\HTML;
+namespace Bockmist\HTML;
 
 class RawTest extends \PHPUnit_Framework_TestCase {
 
