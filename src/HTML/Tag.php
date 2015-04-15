@@ -213,8 +213,7 @@ class Tag extends Element
     public function setText( $str )
     {
         $this->_children = array();
-        $this->addText( $str );
-        return $this;
+        return $this->addText( $str );
     }
 
     /**
@@ -231,7 +230,28 @@ class Tag extends Element
         return NULL;
     }
 
-    /**
+	/**
+	 * @param string $str
+	 * @return $this
+	 */
+	public function addRaw( $str )
+	{
+		$text = new Raw( $str );
+		return $this->addChild( $text );
+	}
+
+	/**
+	 * @param string $str
+	 * @return $this
+	 */
+	public function addComment( $str )
+	{
+		$text = new Comment( $str );
+		return $this->addChild( $text );
+	}
+
+
+	/**
      * @return Element[]
      */
     public function getChildren()

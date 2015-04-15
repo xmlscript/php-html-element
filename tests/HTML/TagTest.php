@@ -69,7 +69,7 @@ class TagTest extends \PHPUnit_Framework_TestCase {
 
 		// getText - text at index 0
 		$tag->setText('<some text>');
-		$this->assertSame('&lt;some text&gt;', $tag->getText());
+		$this->assertSame('<some text>', $tag->getText());
     }
 
 	public function testAttributes()
@@ -134,5 +134,15 @@ class TagTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( $child2, $tag->getChild() );
 		$this->assertSame( $child1, $tag->getChild(1) );
 		$this->assertNull( $tag->getChild(2) );
+
+		$tag = new Tag('div');
+		$tag->addText('<Try this>');
+		$this->assertSame('<div>&lt;Try this&gt;</div>', $tag->render());
+
+		$tag->addRaw('<a name="test">');
+		$this->assertSame('<div>&lt;Try this&gt;<a name="test"></div>', $tag->render());
+
+		$tag->addComment('Secret!');
+		$this->assertSame('<div>&lt;Try this&gt;<a name="test"><!--Secret!--></div>', $tag->render());
 	}
 }
