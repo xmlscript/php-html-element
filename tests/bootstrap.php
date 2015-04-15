@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Bockmist/HTML package.
+ * This file is part of the bockmist/html-element package.
  *
  * (c) Werner Freytag <code@wfco.de>
  *
