@@ -179,13 +179,22 @@ class Tag extends Element
         return $this;
     }
 
+	/**
+	 * @return $this
+	 */
+	public function removeAllChildren()
+	{
+		$this->_children = array();
+		return $this;
+	}
+
     /**
      * @param Element $child
      * @return $this
      */
     public function setChild( Element $child )
     {
-        $this->setChildren( array( $child ) );
+        $this->removeAllChildren()->addChild( $child );
         return $this;
     }
 
